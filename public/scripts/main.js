@@ -1,22 +1,25 @@
 $(document).ready(function() {
-	navigator.getUserMedia  = navigator.getUserMedia ||
-									navigator.webkitGetUserMedia ||
-									navigator.mozGetUserMedia ||
-									navigator.msGetUserMedia;
+	navigator.getUserMedia = navigator.getUserMedia ||
+							 navigator.webkitGetUserMedia ||
+							 navigator.mozGetUserMedia ||
+							 navigator.msGetUserMedia;
 
 	var video = document.querySelector('video');
 
 	if (navigator.getUserMedia) {
+		// Note: Can set additional constraints here (video: {mandatory: { minWidth: 1280, minHeight: 720 }})
 		navigator.getUserMedia({audio: true, video: true}, function(stream) {
 			console.log("stream");
 			video.src = window.URL.createObjectURL(stream);
+
+			console.log(window.URL.createObjectURL(stream));
 
 			video.onloadedmetadata = function(e) {
 				console.log("onloadedmetadata");
 				// Ready to go. Do some stuff.
 			};
 		}, function(e) {
-			console.log('Reeeejected!', e);
+			console.error('Error using getUserMedia', e);
 		});
 	} else {
 		alert("Your browser does not support navigator.getUserMedia. No fun for you :(.")

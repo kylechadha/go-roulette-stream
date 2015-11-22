@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/kylechadha/go-socket-chat/Godeps/_workspace/src/github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 )
 
 func newRouter() *mux.Router {
@@ -13,6 +13,9 @@ func newRouter() *mux.Router {
 
 	// WebSocket routes.
 	router.HandleFunc("/ws", socketHandler)
+
+	// Pusher auth route.
+	router.HandleFunc("/pusher", pusherHandler)
 
 	// Public routes.
 	router.PathPrefix("/libs").Handler(http.FileServer(http.Dir("./public/")))
