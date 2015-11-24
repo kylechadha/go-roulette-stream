@@ -14,9 +14,6 @@ func newRouter() *mux.Router {
 	// WebSocket routes.
 	router.HandleFunc("/ws", socketHandler)
 
-	// Pusher auth route.
-	router.HandleFunc("/pusher", pusherHandler)
-
 	// Public routes.
 	router.PathPrefix("/libs").Handler(http.FileServer(http.Dir("./public/")))
 	router.PathPrefix("/scripts").Handler(http.FileServer(http.Dir("./public/")))

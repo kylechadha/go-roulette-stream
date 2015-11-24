@@ -1,8 +1,31 @@
+navigator.getUserMedia = navigator.getUserMedia ||
+						 navigator.webkitGetUserMedia ||
+						 navigator.mozGetUserMedia ||
+						 navigator.msGetUserMedia;
+
 $(document).ready(function() {
-	navigator.getUserMedia = navigator.getUserMedia ||
-							 navigator.webkitGetUserMedia ||
-							 navigator.mozGetUserMedia ||
-							 navigator.msGetUserMedia;
+
+	var mediaOptions = {
+		audio: true,
+		video: {
+			mandatory: {
+				minWidth: 1280,
+				minHeight: 720
+			}
+		}
+	};
+
+	var $messages = $('#messages'),
+			$modal = $('#name-prompt').modal({ backdrop: 'static' })
+
+	$modal.find('button').click(function(e) {
+		e.preventDefault();
+		name = $modal.find('input').val().trim();
+		if (name === '') return;
+		
+		console.log("Kicking it all off.")
+		$modal.modal('hide');
+	});
 
 	var video = document.querySelector('video');
 
@@ -24,6 +47,9 @@ $(document).ready(function() {
 	} else {
 		alert("Your browser does not support navigator.getUserMedia. No fun for you :(.")
 	}
+
+
+
 
 
 	// // If WebSockets are not available, no dice.
