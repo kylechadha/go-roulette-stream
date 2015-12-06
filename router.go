@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/net/websocket"
 )
 
 func newRouter() *mux.Router {
@@ -12,7 +13,7 @@ func newRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	// WebSocket routes.
-	router.HandleFunc("/ws", socketHandler)
+	router.Handle("/ws", websocket.Handler(socketHandler))
 
 	// Public routes.
 	router.PathPrefix("/libs").Handler(http.FileServer(http.Dir("./public/")))

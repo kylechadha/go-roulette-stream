@@ -29,7 +29,7 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: maxMessageSize,
 }
 
-func socketHandler(w http.ResponseWriter, r *http.Request) {
+func oldSocketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Socket connection opened.")
 
 	// Restrict to HTTP GET.

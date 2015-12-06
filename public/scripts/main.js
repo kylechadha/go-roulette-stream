@@ -1,9 +1,16 @@
 navigator.getUserMedia = navigator.getUserMedia ||
-						 navigator.webkitGetUserMedia ||
-						 navigator.mozGetUserMedia ||
-						 navigator.msGetUserMedia;
+	navigator.webkitGetUserMedia ||
+	navigator.mozGetUserMedia ||
+	navigator.msGetUserMedia;
 
 $(document).ready(function() {
+
+	// If WebSockets are not available, no dice.
+	if (!window["WebSocket"]) {
+		return;
+	}
+
+	conn = new WebSocket('ws://' + window.location.host + '/ws');
 
 	var mediaOptions = {
 		audio: true,
@@ -16,13 +23,15 @@ $(document).ready(function() {
 	};
 
 	var $messages = $('#messages'),
-			$modal = $('#name-prompt').modal({ backdrop: 'static' })
+		$modal = $('#name-prompt').modal({
+			backdrop: 'static'
+		})
 
 	$modal.find('button').click(function(e) {
 		e.preventDefault();
 		name = $modal.find('input').val().trim();
 		if (name === '') return;
-		
+
 		console.log("Kicking it all off.")
 		$modal.modal('hide');
 	});
@@ -31,7 +40,10 @@ $(document).ready(function() {
 
 	if (navigator.getUserMedia) {
 		// Note: Can set additional constraints here (video: {mandatory: { minWidth: 1280, minHeight: 720 }})
-		navigator.getUserMedia({audio: true, video: true}, function(stream) {
+		navigator.getUserMedia({
+			audio: true,
+			video: true
+		}, function(stream) {
 			console.log("stream");
 			video.src = window.URL.createObjectURL(stream);
 
@@ -47,9 +59,6 @@ $(document).ready(function() {
 	} else {
 		alert("Your browser does not support navigator.getUserMedia. No fun for you :(.")
 	}
-
-
-
 
 
 	// // If WebSockets are not available, no dice.
