@@ -3,7 +3,8 @@ navigator.getUserMedia = navigator.getUserMedia ||
 	navigator.mozGetUserMedia ||
 	navigator.msGetUserMedia;
 
-
+// This is a wrapper for our socket server, which adds
+// bind and dispatch functionality.
 var SocketServer = function(url) {
 	var conn = new WebSocket(url);
 	var callbacks = {};
@@ -25,21 +26,23 @@ var SocketServer = function(url) {
 
 	conn.onmessage = function(evt) {
 		var json = JSON.parse(evt.data)
+		console.log(json.event + ": " + json.data);
 		dispatch(json.event, json.data)
 	};
 
 	conn.onclose = function() {
 		dispatch('close', null)
-	}
+	};
+
 	conn.onopen = function() {
 		dispatch('open', null)
-	}
+	};
 
 	var dispatch = function(event_name, message) {
 		var chain = callbacks[event_name];
 		if (typeof chain == 'undefined') return; // no callbacks for this event
 		for (var i = 0; i < chain.length; i++) {
-			chain[i](message)
+			chain[i](message);
 		}
 	}
 };
@@ -52,6 +55,13 @@ $(document).ready(function() {
 	}
 
 	var goServer = new SocketServer('ws://' + window.location.host + '/ws');
+	var initiator = false;
+	goServer.bind('user_connected', function(m) {
+		if (m == true) {
+			alert("HOLY CRAP IT WORKED!")
+			initiator = true;
+		}
+	});
 
 
 	var $messages = $('#messages'),
@@ -96,12 +106,6 @@ $(document).ready(function() {
 		});
 	}
 
-	var initiator = false;
-	goServer.onmessage = function(m) {
-		if (m.data === "initiator") {
-			initiator = true;
-		}
-	};
 
 	var connect = function(stream) {
 		console.log("getUserMedia: got stream.")
